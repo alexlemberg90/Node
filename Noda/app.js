@@ -11,7 +11,7 @@ function sort(girlTime, boyTime) {
             return;
         }
 
-        files.forEach(file => {
+        files.map(file => {
             fs.readFile(path.join(girlTime, file), (e, info) => {
                 if (e) {
                     console.log(e);
@@ -38,7 +38,7 @@ function sort(girlTime, boyTime) {
             return;
         }
 
-        files.forEach(file => {
+        files.map(file => {
             fs.readFile(path.join(boyTime, file), (e, info) => {
                 if (e) {
                     console.log(e);
