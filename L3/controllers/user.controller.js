@@ -1,5 +1,7 @@
 const userService = require('../services/user.service');
 const confirmCode = require('../codeStatus/confirmCode');
+const errorCode = require('../codeStatus/errorCode');
+const statusMessage = require('../message/statusMessage');
 
 module.exports = {
     getAllUsers: (req, res) => {
@@ -7,7 +9,7 @@ module.exports = {
             const users = userService.findUsers();
             res.json(users);
         } catch (e) {
-            res.json(e.message);
+            res.status(errorCode.BAD_REQUEST).json(e.message);
         }
     },
 
@@ -17,7 +19,7 @@ module.exports = {
             const user = userService.findUserById(userId);
             res.json(user);
         } catch (e) {
-            res.json(e.message);
+            res.status(errorCode.BAD_REQUEST).json(e.message);
         }
     },
 
@@ -25,9 +27,9 @@ module.exports = {
         try {
             userService.makeUser(req.body);
 
-            res.status(confirmCode.CREATED_USER).json('add');
+            res.status(confirmCode.CREATED_USER).json(statusMessage.USER_CREATED);
         } catch (e) {
-            res.json(e.message);
+            res.status(errorCode.BAD_REQUEST).json(e.message);
         }
     },
 
@@ -35,9 +37,9 @@ module.exports = {
         try {
             const {userId} = req.params;
             userService.deleteUser(userId);
-            res.status(confirmCode.DELETED_USER).json('del')
+            res.status(confirmCode.DELETED_USER).json(statusMessage.USER_DELETED);
         } catch (e) {
-            res.json(e.message)
+            res.status(errorCode.BAD_REQUEST).json(e.message)
         }
     }
 };
