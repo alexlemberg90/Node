@@ -7,6 +7,7 @@ module.exports = {
     getAllUsers: (req, res) => {
         try {
             const users = userService.findUsers();
+
             res.json(users);
         } catch (e) {
             res.status(errorCode.BAD_REQUEST).json(e.message);
@@ -15,17 +16,18 @@ module.exports = {
 
     getSingleUser: (req, res) => {
         try {
-            const {userId} = req.params;
+            const { userId } = req.params;
             const user = userService.findUserById(userId);
+
             res.json(user);
         } catch (e) {
             res.status(errorCode.BAD_REQUEST).json(e.message);
         }
     },
 
-    createUser: (req, res) => {
+    createUser: async (req, res) => {
         try {
-            userService.makeUser(req.body);
+            await userService.makeUser(req.body);
 
             res.status(confirmCode.CREATED_USER).json(statusMessage.USER_CREATED);
         } catch (e) {
@@ -33,13 +35,15 @@ module.exports = {
         }
     },
 
-    delUser: (req, res) => {
+    delUser: async (req, res) => {
         try {
-            const {userId} = req.params;
-            userService.deleteUser(userId);
+            const { userId } = req.params;
+
+            await userService.deleteUser(userId);
+
             res.status(confirmCode.DELETED_USER).json(statusMessage.USER_DELETED);
         } catch (e) {
-            res.status(errorCode.BAD_REQUEST).json(e.message)
+            res.status(errorCode.BAD_REQUEST).json(e.message);
         }
     }
 };
