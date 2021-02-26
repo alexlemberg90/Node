@@ -7,27 +7,26 @@ module.exports = {
         try {
             const user = req.body;
 
-            userDb.forEach(value => {
+            userDb.forEach((value) => {
                 if (value.email === user.email || value.nickName === user.nickName) {
                     throw new Error('email is already registered');
                 }
-            })
+            });
             if (!user.nickName || !user.email || !user.password) {
                 throw new Error('empty line');
             }
 
             next();
-
         } catch (e) {
             res.status(errorCode.BAD_REQUEST).json('next time');
         }
     },
-    checkIsUserIdValid:  (req, res, next) => {
+    checkIsUserIdValid: (req, res, next) => {
         try {
             const userId = +req.params.userId;
 
             if (userId < 0 || !Number.isInteger(userId) || Number.isNaN(userId)) {
-                throw new Error(errorMessage.NOT_VALID_ID['en']);
+                throw new Error(errorMessage.NOT_VALID_ID.en);
             }
 
             next();
@@ -37,5 +36,3 @@ module.exports = {
     },
 
 };
-
-

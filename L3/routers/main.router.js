@@ -6,5 +6,4 @@ const registerRouter = require('./register.router');
 router.use('/users', userRouter);
 router.use('/register', registerRouter);
 
-
 module.exports = router;
