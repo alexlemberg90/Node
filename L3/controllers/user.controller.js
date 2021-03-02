@@ -4,9 +4,9 @@ const errorCode = require('../codeStatus/errorCode');
 const statusMessage = require('../message/statusMessage');
 
 module.exports = {
-    getAllUsers: (req, res) => {
+    getAllUsers: async (req, res) => {
         try {
-            const users = userService.findUsers();
+            const users = await userService.findUsers();
 
             res.json(users);
         } catch (e) {
@@ -14,14 +14,24 @@ module.exports = {
         }
     },
 
-    getSingleUser: (req, res) => {
+    getSingleUser: async (req, res) => {
         try {
             const { userId } = req.params;
-            const user = userService.findUserById(userId);
+            const user = await userService.findUserById(userId);
 
             res.json(user);
         } catch (e) {
             res.status(errorCode.BAD_REQUEST).json(e.message);
+        }
+    },
+
+    loginUser: async (req, res) => {
+        try {
+            await userService.logUser(req.body);
+
+            res.status(confirmCode.LOGIN_SUCCESS).json(statusMessage.LOGIN_SUCCESS);
+        } catch (e) {
+            res.status(errorCode.UNAUTHORIZED).json(e.message);
         }
     },
 

@@ -10,5 +10,10 @@ module.exports = {
     USER_DELETED: {
         en: 'User is deleted',
         ua: 'Користувача видалено'
-    }
+    },
+    LOGIN_SUCCESS: {
+        en: 'User is login',
+        ua: 'Користувач ввійшов'
+    },
+
 };

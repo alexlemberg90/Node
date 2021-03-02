@@ -1,26 +1,68 @@
-const fs = require('fs');
-const { promisify } = require('util');
-const path = require('path');
-
-const userPath = path.join(process.cwd(), 'DataBase', 'allUsers.json');
-const userDb = require('../DataBase/allUsers.json');
-
-const writeFile = promisify(fs.writeFile);
+const { User } = require('../DataBase/schemas');
 
 module.exports = {
-    findUsers: () => userDb,
+    findUsers: () => User.find().populate('address'),
 
-    findUserById: (userId) => userDb[userId],
+    findUserById: async (userField) => {
+        const user = await User.findOne({
+            $or: [
+                { email: userField },
+                { firstname: userField },
+                { lastname: userField }
+            ]
+        }).populate('address');
 
-    makeUser: async (user) => {
-        userDb.push(user);
-        // eslint-disable-next-line no-return-await
-        return await writeFile(userPath, JSON.stringify(userDb));
+        if (!user) {
+            throw new Error('USER_NOT_FOUND');
+        }
+
+        return user;
+    },
+    logUser: async (data) => {
+        const user = await User.findOne({ email: data.email });
+
+        if (!user) {
+            throw new Error('USER_NOT_FOUND');
+        }
+
+        if (user.password !== data.password.toString()) {
+            throw new Error('LOGIN_WRONG_PASSWORD');
+        }
+
+        return user;
+    },
+
+    makeUser: async (data) => {
+        const {
+            firstname, lastname, email, password
+        } = data;
+
+        const userFind = await User.findOne({ email });
+
+        if (userFind) {
+            throw new Error('USER_ALREADY_EXISTS');
+        }
+
+        await User.create({
+            firstname,
+            lastname,
+            email,
+            password
+        }, (e) => {
+            if (e) {
+                throw new Error(e.message);
+            }
+        });
+        return true;
     },
 
     deleteUser: async (userId) => {
-        userDb.splice(userId, 1);
-        // eslint-disable-next-line no-return-await
-        return await writeFile(userPath, JSON.stringify(userDb));
+        await User.findByIdAndRemove(userId, (e) => {
+            if (e) {
+                throw new Error(e.message);
+            }
+        });
+
+        return true;
     }
 };
