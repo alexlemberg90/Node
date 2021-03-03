@@ -1,24 +1,13 @@
-const errorCode = require('../codeStatus/errorCode');
-const errorMessage = require('../message/statusMessage');
+const errorCode = require('../constants/codeStatus/errorCode');
+const { createUserValidators, idUserValidator } = require('../validators');
 
 module.exports = {
     checkIsValidRegister: (req, res, next) => {
         try {
-            const userFields = [
-                'firstname',
-                'lastname',
-                'email',
-                'password'
-            ];
+            const { error } = createUserValidators.validate(req.body);
 
-            for (const key of userFields) {
-                if (!(key in req.body)) {
-                    throw new Error(`MISSING_USER_FIELD_${key.toUpperCase()}`);
-                }
-
-                if (req.body[key].length === 0) {
-                    throw new Error(`EMPTY_USER_FIELD_${key.toUpperCase()}`);
-                }
+            if (error) {
+                throw new Error(error.details[0].message);
             }
 
             next();
@@ -28,10 +17,11 @@ module.exports = {
     },
     checkIsUserIdValid: (req, res, next) => {
         try {
-            const userId = +req.params.userId;
+            const { userId } = req.params;
+            const error = idUserValidator.validate(userId);
 
-            if (userId < 0 || !Number.isInteger(userId) || Number.isNaN(userId)) {
-                throw new Error(errorMessage.NOT_VALID_ID.en);
+            if (error) {
+                throw new Error(error.details[0].message);
             }
 
             next();

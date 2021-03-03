@@ -15,5 +15,17 @@ module.exports = {
         en: 'User is login',
         ua: 'Користувач ввійшов'
     },
+    USER_NOT_FOUND: {
+        en: 'User not found',
+        ua: 'Користувача не знайдено'
+    },
+    LOGIN_WRONG_PASSWORD_OR_EMAIL: {
+        en: 'Wrong password or email',
+        ua: 'Неправильний пароль або пошта'
+    },
+    USER_ALREADY_EXISTS: {
+        en: 'User already exists',
+        ua: 'Такий користувач вже існує'
+    }
 
 };

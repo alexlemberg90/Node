@@ -1,19 +1,13 @@
 const { User } = require('../DataBase/schemas');
+const { USER_NOT_FOUND, LOGIN_WRONG_PASSWORD_OR_EMAIL, USER_ALREADY_EXISTS } = require('../message/statusMessage');
 
 module.exports = {
-    findUsers: () => User.find().populate('address'),
-
-    findUserById: async (userField) => {
-        const user = await User.findOne({
-            $or: [
-                { email: userField },
-                { firstname: userField },
-                { lastname: userField }
-            ]
-        }).populate('address');
+    findUsers: (query) => User.find(query),
+    findUserById: (userId) => {
+        const user = User.findOne({ _id: userId });
 
         if (!user) {
-            throw new Error('USER_NOT_FOUND');
+            throw new Error(USER_NOT_FOUND.en);
         }
 
         return user;
@@ -22,11 +16,11 @@ module.exports = {
         const user = await User.findOne({ email: data.email });
 
         if (!user) {
-            throw new Error('USER_NOT_FOUND');
+            throw new Error(USER_NOT_FOUND.en);
         }
 
         if (user.password !== data.password.toString()) {
-            throw new Error('LOGIN_WRONG_PASSWORD');
+            throw new Error(LOGIN_WRONG_PASSWORD_OR_EMAIL.en);
         }
 
         return user;
@@ -40,7 +34,7 @@ module.exports = {
         const userFind = await User.findOne({ email });
 
         if (userFind) {
-            throw new Error('USER_ALREADY_EXISTS');
+            throw new Error(USER_ALREADY_EXISTS.en);
         }
 
         await User.create({

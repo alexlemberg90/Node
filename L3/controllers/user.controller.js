@@ -1,12 +1,11 @@
 const userService = require('../services/user.service');
-const confirmCode = require('../codeStatus/confirmCode');
-const errorCode = require('../codeStatus/errorCode');
+const { confirmCode, errorCode } = require('../constants/codeStatus');
 const statusMessage = require('../message/statusMessage');
 
 module.exports = {
     getAllUsers: async (req, res) => {
         try {
-            const users = await userService.findUsers();
+            const users = await userService.findUsers(req.query);
 
             res.json(users);
         } catch (e) {
