@@ -1,6 +1,7 @@
 const userService = require('../services/user.service');
 const { confirmCode, errorCode } = require('../constants/codeStatus');
 const statusMessage = require('../message/statusMessage');
+const { passwordHash } = require('../helpers');
 
 module.exports = {
     getAllUsers: async (req, res) => {
@@ -36,7 +37,10 @@ module.exports = {
 
     createUser: async (req, res) => {
         try {
-            await userService.makeUser(req.body);
+            const { password } = req.body;
+            const hashPassword = await passwordHash.hash(password);
+
+            await userService.makeUser({ ...req.body, password: hashPassword });
 
             res.status(confirmCode.CREATED_USER).json(statusMessage.USER_CREATED);
         } catch (e) {

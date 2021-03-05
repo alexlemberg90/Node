@@ -1,5 +1,6 @@
 const { User } = require('../DataBase/schemas');
-const { USER_NOT_FOUND, LOGIN_WRONG_PASSWORD_OR_EMAIL, USER_ALREADY_EXISTS } = require('../message/statusMessage');
+const { USER_NOT_FOUND, USER_ALREADY_EXISTS } = require('../message/statusMessage');
+const { passwordHash } = require('../helpers');
 
 module.exports = {
     findUsers: (query) => User.find(query),
@@ -13,15 +14,19 @@ module.exports = {
         return user;
     },
     logUser: async (data) => {
-        const user = await User.findOne({ email: data.email });
+        const { email, password } = data;
+
+        const user = await User.findOne({ email });
 
         if (!user) {
             throw new Error(USER_NOT_FOUND.en);
         }
 
-        if (user.password !== data.password.toString()) {
-            throw new Error(LOGIN_WRONG_PASSWORD_OR_EMAIL.en);
-        }
+        passwordHash.compare(password, user.password);
+
+        // if (user.password !== data.password.toString()) {
+        //     throw new Error(LOGIN_WRONG_PASSWORD_OR_EMAIL.en);
+        // }
 
         return user;
     },
