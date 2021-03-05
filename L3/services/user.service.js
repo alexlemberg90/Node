@@ -22,11 +22,7 @@ module.exports = {
             throw new Error(USER_NOT_FOUND.en);
         }
 
-        passwordHash.compare(password, user.password);
-
-        // if (user.password !== data.password.toString()) {
-        //     throw new Error(LOGIN_WRONG_PASSWORD_OR_EMAIL.en);
-        // }
+        await passwordHash.compare(password, user.password);
 
         return user;
     },
